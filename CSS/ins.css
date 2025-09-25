@@ -1,0 +1,200 @@
+body {
+  font-family: sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  flex-direction: column;
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.1)),
+    url(../images/pexels-tiger-lily-4483610.jpg);
+  background-size: cover;
+  background-position: center;
+}
+
+header,
+header::before,
+header::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  font-family: sans-serif;
+}
+
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 5px 0;
+}
+
+nav .logo {
+  width: 170px;
+  cursor: pointer;
+}
+
+nav ul {
+  display: flex;
+  justify-content: flex-end;
+  flex: 1;
+  padding-right: 40px;
+  text-align: right;
+  list-style-type: none;
+}
+ul li {
+  margin: 10px;
+}
+
+ul li a {
+  position: relative;
+  padding: 10px 20px;
+  text-decoration: none;
+  color: white;
+  font-size: 16px;
+}
+
+ul li a::after {
+  content: "";
+  position: absolute;
+  background: white;
+  bottom: 0;
+  right: 0;
+  height: 3px;
+  width: 0;
+  transform: translate(-50%, -5px);
+  transition: 0.3s;
+}
+
+ul li a:hover::after {
+  width: 45%;
+}
+
+.formulaire {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: transparent;
+  border-radius: 10px;
+  width: 450px;
+  height: 500px;
+  outline: auto;
+}
+
+form input {
+  margin-top: 15px;
+  width: 350px;
+  padding: 10px;
+  background-color: transparent;
+  color: white;
+  border: 1px solid black;
+  border-radius: 15px;
+}
+
+form input::placeholder {
+  color: white;
+}
+
+.sub {
+  width: 300px;
+  margin-left: 25px;
+  background-color: rgb(42, 87, 210);
+  border-radius: 5px;
+  border: 1px;
+}
+
+h1 {
+  font-size: 50px;
+  margin-left: 25px;
+  color: white;
+}
+
+#condition {
+  display: none;
+  flex-direction: column;
+  background-color: transparent;
+  color: white;
+  border-radius: 5px;
+  width: 350px;
+  position: relative;
+  padding: 5px;
+  padding-left: 50px;
+  letter-spacing: 0.5px;
+  animation: anime 0.5s ease-out;
+  width: 350px;
+  height: 200px;
+  outline: auto;
+  backdrop-filter: blur(25px);
+}
+p {
+  margin-top: auto;
+}
+
+@keyframes anime {
+  from {
+    transform: translateY(100px);
+  }
+}
+
+.invalid {
+  color: red;
+}
+
+.invalid::before {
+  left: -7px;
+  content: "X";
+  position: relative;
+}
+
+.valid {
+  color: green;
+}
+
+.valid::before {
+  left: -7px;
+  content: "O";
+  position: relative;
+}
+
+.formulaire {
+  background-color: transparent;
+  height: 500px;
+  border-radius: 5px;
+  width: 420px;
+  position: relative;
+  padding: 15px;
+  letter-spacing: 0.5px;
+  box-shadow: black;
+  backdrop-filter: blur(25px);
+}
+
+@media (max-width: 1000px) {
+  * {
+    width: 100%;
+    height: auto;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+  }
+  .formulaire {
+    height: auto;
+    width: 370px;
+    max-height: 60vh;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+    height: 60vh;
+    width: 370px;
+  }
+
+  form input {
+    width: 300px;
+  }
+}

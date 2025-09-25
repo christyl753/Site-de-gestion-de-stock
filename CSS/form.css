@@ -1,0 +1,139 @@
+body {
+  font-family: sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  flex-direction: column;
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.1)),
+    url(../images/pexels-tiger-lily-4483610.jpg);
+  background-size: cover;
+  background-position: center;
+}
+
+header,
+header::before,
+header::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  font-family: sans-serif;
+}
+
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 5px 0;
+}
+
+nav .logo {
+  width: 170px;
+  cursor: pointer;
+}
+
+nav ul {
+  display: flex;
+  justify-content: flex-end;
+  flex: 1;
+  padding-right: 40px;
+  text-align: right;
+  list-style-type: none;
+}
+ul li {
+  margin: 10px;
+}
+
+ul li a {
+  position: relative;
+  padding: 10px 20px;
+  text-decoration: none;
+  color: white;
+  font-size: 16px;
+}
+
+ul li a::after {
+  content: "";
+  position: absolute;
+  background: white;
+  bottom: 0;
+  right: 0;
+  height: 3px;
+  width: 0;
+  transform: translate(-50%, -5px);
+  transition: 0.3s;
+}
+
+ul li a:hover::after {
+  width: 45%;
+}
+
+.formulaire {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 450px;
+  height: 350px;
+  outline: auto;
+  border-radius: 10px;
+  border: 1px solid black;
+  backdrop-filter: blur(25px);
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+form input {
+  margin-top: 15px;
+  width: 350px;
+  padding: 10px;
+  background-color: transparent;
+  color: white;
+  border: 1px solid black;
+  border-radius: 15px;
+}
+
+form input::placeholder {
+  color: white;
+}
+.sub {
+  width: 300px;
+  background-color: rgba(16, 110, 234, 0.804);
+  border-radius: 5px;
+  border: 5px;
+}
+
+h1 {
+  font-size: 50px;
+  color: white;
+}
+
+.condition {
+  display: no;
+  flex-direction: column;
+}
+
+@media (max-width: 1000px) {
+  * {
+    width: 100%;
+  }
+  .formulaire {
+    height: auto;
+    width: auto;
+    max-height: 50vh;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 60vh;
+    width: 70%;
+  }
+  form input {
+    width: 300px;
+  }
+}
