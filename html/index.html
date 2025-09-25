@@ -1,0 +1,347 @@
+<html><head><base href="." /><title>Système de Gestion d'Inventaire</title>
+<style>
+:root {
+  --primary: #2c3e50;
+  --secondary: #34495e;
+  --accent: #3498db;
+  --success: #27ae60;
+  --warning: #f1c40f;
+  --danger: #e74c3c;
+  --light: #ecf0f1;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  background: #f5f6fa;
+}
+
+.navbar {
+  background: var(--primary);
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.logo {
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.main-content {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  min-height: 100vh;
+}
+
+.sidebar {
+  background: var(--secondary);
+  padding: 2rem;
+  color: white;
+}
+
+.menu-item {
+  padding: 1rem;
+  margin: 0.5rem 0;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.menu-item:hover {
+  background: var(--accent);
+}
+
+.dashboard {
+  padding: 2rem;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.chart-container {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  margin-bottom: 2rem;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.data-table th, .data-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--light);
+}
+
+.data-table th {
+  background: var(--primary);
+  color: white;
+}
+
+.btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: white;
+}
+
+.btn-success {
+  background: var(--success);
+  color: white;
+}
+
+.btn-warning {
+  background: var(--warning);
+  color: white;
+}
+
+.btn-danger {
+  background: var(--danger);
+  color: white;
+}
+
+.alert {
+  padding: 1rem;
+  border-radius: 5px;
+  margin-bottom: 1rem;
+}
+
+.alert-warning {
+  background: var(--warning);
+  color: white;
+}
+
+.search-bar {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid var(--light);
+  border-radius: 5px;
+  margin-bottom: 1rem;
+}
+
+.product-img {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 5px;
+  margin-right: 10px;
+}
+
+.product-cell {
+  display: flex;
+  align-items: center;
+}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="logo">InvenPro</div>
+  <div class="user-info">
+    <button class="btn btn-primary">Se déconnecter</button>
+  </div>
+</nav>
+
+<div class="main-content">
+  <aside class="sidebar">
+    <div class="menu-item">Tableau de bord</div>
+    <div class="menu-item">Produits</div>
+    <div class="menu-item">Fournisseurs</div>
+    <div class="menu-item">Utilisateurs</div>
+    <div class="menu-item">Rapports</div>
+    <div class="menu-item">Paramètres</div>
+  </aside>
+
+  <main class="dashboard">
+    <h1>Tableau de bord</h1>
+    
+    <div class="stats-grid">
+      <div class="stat-card">
+        <h3>Total Produits</h3>
+        <p class="stat-number">1,234</p>
+      </div>
+      <div class="stat-card">
+        <h3>Alertes Stock</h3>
+        <p class="stat-number">15</p>
+      </div>
+      <div class="stat-card">
+        <h3>Fournisseurs</h3>
+        <p class="stat-number">48</p>
+      </div>
+      <div class="stat-card">
+        <h3>Commandes en cours</h3>
+        <p class="stat-number">23</p>
+      </div>
+    </div>
+
+    <div class="chart-container">
+      <canvas id="stockChart"></canvas>
+    </div>
+
+    <div class="alert alert-warning">
+      ⚠️ 5 produits sont en dessous du seuil minimal de stock
+    </div>
+
+    <input type="text" class="search-bar" placeholder="Rechercher un produit...">
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Produit</th>
+          <th>Catégorie</th>
+          <th>Stock</th>
+          <th>Prix</th>
+          <th>Fournisseur</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="product-cell">
+            <svg class="product-img" viewBox="0 0 50 50">
+              <rect width="50" height="50" fill="#3498db"/>
+              <text x="25" y="30" text-anchor="middle" fill="white" font-size="20">PA</text>
+            </svg>
+            Produit A
+          </td>
+          <td>Électronique</td>
+          <td>45</td>
+          <td>299.99 €</td>
+          <td>Fournisseur X</td>
+          <td>
+            <button class="btn btn-primary">Éditer</button>
+            <button class="btn btn-danger">Supprimer</button>
+          </td>
+        </tr>
+        <tr>
+          <td class="product-cell">
+            <svg class="product-img" viewBox="0 0 50 50">
+              <rect width="50" height="50" fill="#27ae60"/>
+              <text x="25" y="30" text-anchor="middle" fill="white" font-size="20">PB</text>
+            </svg>
+            Produit B
+          </td>
+          <td>Informatique</td>
+          <td>32</td>
+          <td>499.99 €</td>
+          <td>Fournisseur Y</td>
+          <td>
+            <button class="btn btn-primary">Éditer</button>
+            <button class="btn btn-danger">Supprimer</button>
+          </td>
+        </tr>
+        <tr>
+          <td class="product-cell">
+            <svg class="product-img" viewBox="0 0 50 50">
+              <rect width="50" height="50" fill="#e74c3c"/>
+              <text x="25" y="30" text-anchor="middle" fill="white" font-size="20">PC</text>
+            </svg>
+            Produit C
+          </td>
+          <td>Accessoires</td>
+          <td>78</td>
+          <td>149.99 €</td>
+          <td>Fournisseur Z</td>
+          <td>
+            <button class="btn btn-primary">Éditer</button>
+            <button class="btn btn-danger">Supprimer</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </main>
+</div>
+
+<script>
+const ctx = document.getElementById('stockChart').getContext('2d');
+new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: ['Jan', 'Fev', 'Mar', 'Avr', 'Mai', 'Juin'],
+    datasets: [{
+      label: 'Niveau de Stock',
+      data: [65, 59, 80, 81, 56, 55],
+      borderColor: '#3498db',
+      tension: 0.1
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      title: {
+        display: true,
+        text: 'Évolution du stock sur 6 mois'
+      }
+    }
+  }
+});
+
+document.querySelectorAll('.menu-item').forEach(item => {
+  item.addEventListener('click', function() {
+    console.log('Navigation vers:', this.textContent);
+  });
+});
+
+document.querySelector('.search-bar').addEventListener('input', function(e) {
+  const searchTerm = e.target.value.toLowerCase();
+  console.log('Recherche:', searchTerm);
+});
+
+document.querySelectorAll('.btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    if (this.textContent === 'Éditer') {
+      console.log('Édition du produit');
+    } else if (this.textContent === 'Supprimer') {
+      if (confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')) {
+        console.log('Suppression du produit');
+      }
+    }
+  });
+});
+
+function checkStockLevels() {
+  const lowStockItems = [];
+  if (lowStockItems.length > 0) {
+    // Afficher les alertes
+  }
+}
+
+setInterval(checkStockLevels, 300000);
+</script>
+
+</body></html>

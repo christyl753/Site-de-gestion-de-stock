@@ -1,0 +1,17 @@
+{% extends 'index;html'%}
+
+{% block title %}Connexion{% endblock %}
+
+{% block content %}
+<h2>Connexion</h2>
+<form action="/login" method="POST">
+    <label for="username">Nom d'utilisateur :</label>
+    <input type="text" id="username" name="username" required>
+    <label for="password">Mot de passe :</label>
+    <input type="password" id="password" name="password" required>
+    <button type="submit">Se connecter</button>
+</form>
+{% endblock %}
+{% if error %}
+<p style="color: red;">{{ error }}</p>
+{% endif %}

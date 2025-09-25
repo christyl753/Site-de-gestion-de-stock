@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gestion des Produits</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="/static/styles.css" />
+  <style>
+    :root {
+      --primary: #2c3e50;
+      --secondary: #34495e;
+      --accent: #3498db;
+      --success: #27ae60;
+      --warning: #f1c40f;
+      --danger: #e74c3c;
+      --light: #ecf0f1;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body {
+      background: #f5f6fa;
+    }
+
+    .navbar {
+      background: var(--primary);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .logo {
+      color: white;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .main-content {
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      background: var(--secondary);
+      padding: 2rem;
+      color: white;
+    }
+
+    .menu-item {
+      padding: 1rem;
+      margin: 0.5rem 0;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: 0.3s;
+      color: white;
+    }
+
+    .menu-item:hover {
+      background: var(--accent);
+    }
+
+    .dashboard {
+      padding: 2rem;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .chart-container {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      margin-bottom: 2rem;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .data-table th,
+    .data-table td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--light);
+    }
+
+    .data-table th {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: white;
+    }
+
+    .btn-warning {
+      background: var(--warning);
+      color: white;
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: white;
+    }
+
+    .alert {
+      padding: 1rem;
+      border-radius: 5px;
+      margin-bottom: 1rem;
+    }
+
+    .alert-warning {
+      background: var(--warning);
+      color: white;
+    }
+
+    .search-bar {
+      width: 100%;
+      padding: 0.8rem;
+      border: 1px solid var(--light);
+      border-radius: 5px;
+      margin-bottom: 1rem;
+    }
+
+    .product-img {
+      width: 50px;
+      height: 50px;
+      object-fit: cover;
+      border-radius: 5px;
+      margin-right: 10px;
+    }
+
+    .product-cell {
+      display: flex;
+      align-items: center;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+  <header>
+    <nav class="navbar">
+      <div class="logo">Führer</div>
+      <div class="user-info">
+        <button class="btn btn-primary" onclick="logout()">Se déconnecter</button>
+      </div>
+    </nav>
+  </header>
+  <div class="main-content">
+    <aside class="sidebar">
+      <a href="index.html">
+        <div class="menu-item">Tableau de bord</div>
+      </a>
+      <a href="produits.html">
+        <div class="menu-item">Produits</div>
+      </a>
+      <a href="fournisseurs.html">
+        <div class="menu-item">Fournisseurs</div>
+      </a>
+      <a href="rapports.html">
+        <div class="menu-item">Rapports</div>
+      </a>
+    </aside>
+    <main class="dashboard">
+      <section class="mt-4">
+        <h2>Ajouter un Produit</h2>
+        <form id="add-product-form" class="form-inline" action="http://localhost:3000/dashboard" method="post">
+          <input type="text" id="product-name" name="name" placeholder="Nom du produit" class="form-control mr-2"
+            required />
+
+          <input type="text" name="category" id="product-category" class="form-control mr-2" placeholder="Catégorie"
+            required />
+          <input type="number" name="price" id="product-price" class="form-control mr-2" placeholder="Prix" required />
+          <input type="number" name="quantity" id="product-quantity" placeholder="Quantité" class="form-control mr-2"
+            required />
+          <input type="text" id="product-provider" name="provider" placeholder="fournisseur" class="form-control mr-2"
+            required />
+          <button type="submit" class="btn btn-primary">Ajouter</button>
+        </form>
+
+      </section>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Produit</th>
+            <th>Catégorie</th>
+            <th>Prix</th>
+            <th>Qté</th>
+            <th>Fournisseur</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="productsTableBody">
+          <!-- Les données seront insérées ici dynamiquement -->
+        </tbody>
+      </table>
+    </main>
+  </div>
+  <footer>
+    <p>&copy; 2024 Christ Tiantse</p>
+  </footer>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="/static/js/app.js"></script>
+  <script>
+    // Désactiver les avertissements de source map
+    console.warn = function () { };
+
+    // Fonction pour charger les produits
+    async function loadProducts() {
+      try {
+        const response = await fetch('http://localhost:3000/api/products');
+        const products = await response.json();
+
+        const tbody = document.getElementById('productsTableBody');
+        tbody.innerHTML = ''; // Vider le tableau
+
+        products.forEach(product => {
+          console.log("ID du produit:", product.id); // Ajout du log pour vérifier l'ID
+          tbody.innerHTML += `
+              <tr data-id="${product.id}">
+                <td>${product.Produits}</td>
+                <td>${product.categories}</td>
+                <td>${product.prix} €</td>
+                <td>${product.Stock}</td>
+                <td>${product.fournisseurs}</td>
+                <td>
+                  <button class="btn btn-primary" onclick="editProduct(${product.id})">Éditer</button>
+                  <button class="btn btn-danger" onclick="deleteProduct(${product.id})">Supprimer</button>
+                </td>
+              </tr>
+            `;
+        });
+      } catch (error) {
+        console.error('Erreur:', error);
+      }
+    }
+
+    // Charger les produits au chargement de la page
+    document.addEventListener('DOMContentLoaded', loadProducts);
+
+    // Recharger les produits après l'ajout d'un nouveau produit
+    document.getElementById('add-product-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = {
+        name: document.getElementById('product-name').value,
+        category: document.getElementById('product-category').value,
+        quantity: document.getElementById('product-quantity').value,
+        price: document.getElementById('product-price').value,
+        provider: document.getElementById('product-provider').value
+      };
+
+      try {
+        const response = await fetch('http://localhost:3000/dashboard', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData)
+        });
+
+        if (response.ok) {
+          alert('Produit ajouté avec succès!');
+          document.getElementById('add-product-form').reset();
+          loadProducts(); // Recharger la liste des produits
+        } else {
+          const data = await response.json();
+          alert(data.error || 'Erreur lors de l\'ajout du produit');
+        }
+      } catch (error) {
+        console.error('Erreur:', error);
+        alert('Erreur de connexion au serveur');
+      }
+    });
+
+    // Fonction pour supprimer un produit
+    async function deleteProduct(id) {
+      console.log("Tentative de suppression du produit ID:", id);
+      if (confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')) {
+        try {
+          const response = await fetch(`http://localhost:3000/api/products/${id}`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            await loadProducts(); // Attendre que la liste soit rechargée
+            alert('Produit supprimé avec succès');
+          } else {
+            console.error('Erreur:', data);
+            alert(data.error || 'Erreur lors de la suppression');
+          }
+        } catch (error) {
+          console.error('Erreur détaillée:', error);
+          alert('Erreur lors de la suppression');
+        }
+      }
+    }
+
+    // Fonction pour éditer un produit
+    function editProduct(id) {
+      const row = event.target.closest('tr');
+      const cells = row.cells;
+
+      // Remplacer les cellules par des inputs
+      cells[0].innerHTML = `<input type="text" value="${cells[0].textContent}" class="form-control edit-input">`;
+      cells[1].innerHTML = `<input type="text" value="${cells[1].textContent}" class="form-control edit-input">`;
+      cells[2].innerHTML = `<input type="number" value="${cells[2].textContent.replace('€', '').trim()}" class="form-control edit-input">`;
+      cells[3].innerHTML = `<input type="number" value="${cells[3].textContent}" class="form-control edit-input">`;
+      cells[4].innerHTML = `<input type="text" value="${cells[4].textContent}" class="form-control edit-input">`;
+      cells[5].innerHTML = `
+          <button onclick="saveEdit(${id}, this)" class="btn btn-success">Sauvegarder</button>
+          <button onclick="cancelEdit(${id})" class="btn btn-warning">Annuler</button>
+        `;
+    }
+
+    // Fonction pour sauvegarder les modifications
+    async function saveEdit(id, button) {
+      console.log("Tentative de modification du produit ID:", id);
+      const row = button.closest('tr');
+      const inputs = row.querySelectorAll('.edit-input');
+
+      const formData = {
+        name: inputs[0].value,
+        category: inputs[1].value,
+        price: inputs[2].value.replace('€', '').trim(),
+        quantity: inputs[3].value,
+        provider: inputs[4].value
+      };
+
+      console.log("Données à envoyer:", formData);
+
+      try {
+        const response = await fetch(`http://localhost:3000/api/products/${id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(formData)
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          await loadProducts(); // Attendre que la liste soit rechargée
+          alert('Produit modifié avec succès');
+        } else {
+          console.error('Erreur:', data);
+          alert(data.error || 'Erreur lors de la modification');
+        }
+      } catch (error) {
+        console.error('Erreur détaillée:', error);
+        alert('Erreur lors de la modification');
+      }
+    }
+
+    // Fonction pour annuler l'édition
+    function cancelEdit() {
+      loadProducts(); // Recharger la liste pour annuler les modifications
+    }
+
+    function logout() {
+      localStorage.removeItem('token');
+      window.location.href = '../accueil.html';
+    }
+  </script>
+</body>
+
+</html>

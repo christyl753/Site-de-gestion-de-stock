@@ -1,0 +1,23 @@
+{% extends 'index.html' %}
+
+{% block title %}GESTION{% endblock %}
+
+{% block content %}
+<h2>Gestion d'Inventaire</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Quantité</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in items %}
+        <tr>
+            <td>{{ item.name }}</td>
+            <td>{{ item.quantity }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

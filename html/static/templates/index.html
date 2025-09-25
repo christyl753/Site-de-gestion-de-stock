@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GESTION d'inventaires</title>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='/static/styles.css') }}"
+    />
+    <link
+      rel="shortcut icon"
+      href="../icônes/favicon.ico"
+      type="image/x-icon"
+    />
+  </head>
+  <body>
+    <nav>
+      <img
+        src="../../../images/Gray and Black Simple Studio Logo-Photoroom.png"
+        alt="logo"
+        class="logo"
+      />
+
+      <ul>
+        <li><a href="../../accueil.html">deconnexion</a></li>
+        <li><a href="/inventaire">Inventaire</a></li>
+      </ul>
+    </nav>
+    <style>
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        padding: 5px 0;
+      }
+
+      nav .logo {
+        width: 170px;
+        cursor: pointer;
+      }
+
+      nav ul {
+        display: flex;
+        justify-content: flex-end;
+        flex: 1;
+        padding-right: 40px;
+        text-align: right;
+        list-style-type: none;
+      }
+      ul li {
+        margin: 10px;
+      }
+
+      ul li a {
+        position: relative;
+        padding: 10px 20px;
+        text-decoration: none;
+        color: black;
+        font-size: 16px;
+      }
+
+      ul li a::after {
+        content: "";
+        position: absolute;
+        text-decoration: none;
+        background: black;
+        bottom: 0;
+        right: 0;
+        height: 3px;
+        width: 0;
+        transform: translate(-50%, -5px);
+        transition: 0.3s;
+      }
+
+      ul li a:hover::after {
+        width: 45%;
+      }
+    </style>
+    <div class="container">
+      <header class="my-4 text-center">
+        <h1>GESTION</h1>
+        <p class="lead">Suivez et gérez votre inventaire facilement</p>
+      </header>
+
+      <section>
+        <h2>Ajouter un Produit</h2>
+        <form id="add-product-form" class="form-inline">
+          <input
+            type="text"
+            id="product-name"
+            placeholder="Nom du produit"
+            class="form-control mr-2"
+            required
+          />
+          <input
+            type="number"
+            id="product-quantity"
+            placeholder="Quantité"
+            class="form-control mr-2"
+            required
+          />
+          <button type="submit" class="btn btn-primary">Ajouter</button>
+        </form>
+      </section>
+
+      <section class="mt-4">
+        <h2>Inventaire</h2>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Produit</th>
+              <th>Quantité</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="inventory-table"></tbody>
+        </table>
+      </section>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+  </body>
+</html>

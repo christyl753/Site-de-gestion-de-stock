@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Connexion</title>
+    <link rel="stylesheet" href="../CSS/form.css" />
+    <link
+      rel="shortcut icon"
+      href="../icônes/favicon.ico"
+      type="image/x-icon"
+    />
+  </head>
+  <body>
+    <header>
+      <nav>
+        <img
+          src="../images/Gray and Black Simple Studio Logo-Photoroom.png"
+          alt="logo"
+          class="logo"
+        />
+        <ul>
+          <li><a href="/">accueil</a></li>
+          <li><a href="inscription.html">inscription</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <div class="formulaire">
+      <h1>Connexion</h1>
+      <form id="login-form" action="http://localhost:3000/login" method="post">
+        <input type="text" name="name" placeholder="Nom" id="name" required />
+        <input
+          type="password"
+          name="password"
+          placeholder="Mot de passe"
+          id="password"
+          required
+        />
+        <input class="sub" type="submit" value="connexion" />
+        <a href=""> mot de passe oublié </a>
+        <a href="inscription.html">vous n'avez pas de compte ?</a>
+      </form>
+    </div>
+  </body>
+</html>

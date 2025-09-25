@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <base href="." />
+  <title>Système de Gestion d'Inventaire</title>
+  <style>
+    :root {
+      --primary: #2c3e50;
+      --secondary: #34495e;
+      --accent: #3498db;
+      --success: #27ae60;
+      --warning: #f1c40f;
+      --danger: #e74c3c;
+      --light: #ecf0f1;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body {
+      background: #f5f6fa;
+    }
+
+    .navbar {
+      background: var(--primary);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .logo {
+      color: white;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .main-content {
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      background: var(--secondary);
+      padding: 2rem;
+      color: white;
+    }
+
+    .menu-item {
+      padding: 1rem;
+      margin: 0.5rem 0;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: 0.3s;
+      color: white;
+    }
+
+    .menu-item:hover {
+      background: var(--accent);
+    }
+
+    .dashboard {
+      padding: 2rem;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .chart-container {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      margin-bottom: 2rem;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .data-table th,
+    .data-table td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--light);
+    }
+
+    .data-table th {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: white;
+    }
+
+    .btn-warning {
+      background: var(--warning);
+      color: white;
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: white;
+    }
+
+    .alert {
+      padding: 1rem;
+      border-radius: 5px;
+      margin-bottom: 1rem;
+    }
+
+    .alert-warning {
+      background: var(--warning);
+      color: white;
+    }
+
+    .search-bar {
+      width: 100%;
+      padding: 0.8rem;
+      border: 1px solid var(--light);
+      border-radius: 5px;
+      margin-bottom: 1rem;
+    }
+
+    .product-img {
+      width: 50px;
+      height: 50px;
+      object-fit: cover;
+      border-radius: 5px;
+      margin-right: 10px;
+    }
+
+    .product-cell {
+      display: flex;
+      align-items: center;
+    }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+  <nav class="navbar">
+    <div class="logo">Führer</div>
+    <div class="user-info">
+      <button class="btn btn-primary" onclick="logout()">Se déconnecter</button>
+    </div>
+  </nav>
+
+  <div class="main-content">
+    <aside class="sidebar">
+      <div class="menu-item">Tableau de bord</div>
+      <a href="produits.html">
+        <div class="menu-item">Produits</div>
+      </a>
+      <a href="fournisseurs.html">
+        <div class="menu-item">Fournisseurs</div>
+      </a>
+      <a href="rapports.html">
+        <div class="menu-item">Rapports</div>
+      </a>
+    </aside>
+
+    <main class="dashboard">
+      <h2>Tableau de bord</h2>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h3>Total Produits</h3>
+          <p class="stat-number" id="totalProducts">0</p>
+        </div>
+        <div class="stat-card">
+          <h3>Alertes Stock</h3>
+          <p class="stat-number" id="lowStockCount">0</p>
+        </div>
+        <div class="stat-card">
+          <h3>Fournisseurs</h3>
+          <p class="stat-number" id="totalFournisseurs">0</p>
+        </div>
+        <div class="stat-card">
+          <h3>Commandes en cours</h3>
+          <p class="stat-number">23</p>
+        </div>
+      </div>
+
+      <div class="chart-container">
+        <canvas id="stockChart"></canvas>
+      </div>
+
+      <input type="text" class="search-bar" placeholder="Rechercher un produit..." id="searchBar" />
+
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Produit</th>
+            <th>Catégorie</th>
+            <th>Stock</th>
+            <th>Prix</th>
+            <th>Fournisseur</th>
+          </tr>
+        </thead>
+        <tbody id="productsTableBody">
+          <!-- Les données seront insérées ici dynamiquement -->
+        </tbody>
+      </table>
+    </main>
+  </div>
+  <footer>
+    <p>&copy; 2024 Christ Tiantse</p>
+  </footer>
+  <script>
+    let products = [];
+
+    async function loadDashboardStats() {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch('http://localhost:3000/api/dashboard/stats', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        const stats = await response.json();
+
+        // Mettre à jour les statistiques
+        document.getElementById('totalProducts').textContent = stats.totalStock;
+        document.getElementById('lowStockCount').textContent = stats.lowStockCount;
+
+        // Récupérer le nombre de fournisseurs
+        const fournisseursResponse = await fetch('http://localhost:3000/api/fournisseurs', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        const fournisseurs = await fournisseursResponse.json();
+        document.getElementById('totalFournisseurs').textContent = fournisseurs.length;
+
+        // Mettre à jour le graphique
+        const ctx = document.getElementById('stockChart').getContext('2d');
+        new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: stats.stockEvolution.map(item => item.month),
+            datasets: [{
+              label: 'Niveau de Stock',
+              data: stats.stockEvolution.map(item => item.total),
+              borderColor: '#3498db',
+              tension: 0.1
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              title: {
+                display: true,
+                text: 'Évolution du stock sur 6 mois'
+              }
+            }
+          }
+        });
+      } catch (error) {
+        console.error('Erreur:', error);
+      }
+    }
+
+    async function loadProducts() {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch('http://localhost:3000/api/products', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        products = await response.json();
+
+        // Grouper les produits par nom et calculer la somme des stocks
+        const groupedProducts = products.reduce((acc, product) => {
+          if (!acc[product.Produits]) {
+            acc[product.Produits] = { ...product, Stock: 0 };
+          }
+          acc[product.Produits].Stock += product.Stock;
+          return acc;
+        }, {});
+
+        const productNames = Object.keys(groupedProducts);
+        const productStocks = productNames.map(name => groupedProducts[name].Stock);
+
+        displayProducts(products);
+
+        // Mettre à jour le graphique avec les données des produits
+        const ctx = document.getElementById('stockChart').getContext('2d');
+        new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: productNames,
+            datasets: [{
+              label: 'Stock',
+              data: productStocks,
+              backgroundColor: '#3498db'
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              title: {
+                display: true,
+                text: 'Stock des produits'
+              }
+            }
+          }
+        });
+      } catch (error) {
+        console.error('Erreur:', error);
+      }
+    }
+
+    function displayProducts(products) {
+      const tbody = document.getElementById('productsTableBody');
+      tbody.innerHTML = ''; // Vider le tableau
+
+      products.forEach(product => {
+        tbody.innerHTML += `
+            <tr>
+              <td>${product.Produits}</td>
+              <td>${product.categories}</td>
+              <td>${product.Stock}</td>
+              <td>${product.prix} €</td>
+              <td>${product.fournisseurs}</td>
+            </tr>
+          `;
+      });
+    }
+
+    document.getElementById('searchBar').addEventListener('input', function (e) {
+      const searchTerm = e.target.value.toLowerCase();
+      const filteredProducts = products.filter(product =>
+        product.Produits.toLowerCase().includes(searchTerm) ||
+        product.categories.toLowerCase().includes(searchTerm) ||
+        product.fournisseurs.toLowerCase().includes(searchTerm)
+      );
+      displayProducts(filteredProducts);
+    });
+
+    function logout() {
+      localStorage.removeItem('token');
+      window.location.href = '../accueil.html';
+    }
+
+    // Charger les statistiques et les produits au chargement de la page
+    document.addEventListener('DOMContentLoaded', () => {
+      loadDashboardStats();
+      loadProducts();
+    });
+
+    // Actualiser les données toutes les 5 minutes
+    setInterval(loadDashboardStats, 300000);
+  </script>
+</body>
+
+</html>

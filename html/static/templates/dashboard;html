@@ -1,0 +1,8 @@
+{% extends 'index.html' %}
+
+{% block title %}Tableau de Bord{% endblock %}
+
+{% block content %}
+<h2>Tableau de Bord</h2>
+<p>Bienvenue, {{ username }} !</p>
+{% endblock %}

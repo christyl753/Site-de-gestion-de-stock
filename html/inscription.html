@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inscription</title>
+    <link rel="stylesheet" href="../CSS/ins.css" />
+    <link
+      rel="shortcut icon"
+      href="../icônes/favicon.ico"
+      type="image/x-icon"
+    />
+  </head>
+  <body>
+    <header>
+      <nav>
+        <img
+          src="../images/Gray and Black Simple Studio Logo-Photoroom.png"
+          alt="logo"
+          class="logo"
+        />
+        <ul>
+          <li><a href="accueil.html">accueil</a></li>
+          <li><a href="connexion.html">connexion</a></li>
+        </ul>
+      </nav>
+    </header>
+    <div class="formulaire">
+      <form id="form" method="post">
+        <h1>Inscription</h1>
+        <input type="text" name="name" placeholder="Nom" id="nom" required />
+        <input type="text" name="surname" placeholder="Prénom" id="prenom" />
+        <input
+          type="date"
+          name="birth"
+          placeholder="date de naissance"
+          id="date"
+          required
+        />
+        <input
+          type="email"
+          name="email"
+          id="mail"
+          placeholder="adresse mail"
+          required
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="mot de passe"
+          id="pwd"
+          required
+        />
+        <input
+          type="password"
+          name="confirm"
+          placeholder="confirmer le mot de passe"
+          id="pass"
+          required
+        />
+        <input
+          type="submit"
+          placeholder="S'inscrire"
+          id="submitBtn"
+          class="sub"
+        />
+      </form>
+    </div>
+    <div id="condition">
+      <h3>le mot de passe doit contenir :</h3>
+      <p id="maj" class="invalid">une lettre majuscule</p>
+      <p id="min" class="invalid">une lettre miniscule</p>
+      <p id="num" class="invalid">un chiffre</p>
+      <p id="taille" class="invalid">minimum 8 caractères</p>
+    </div>
+    <script src="/envoie.js"></script>
+    <script src="../javascript/password.js"></script>
+    <script>
+      document.getElementById('form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const formData = {
+          name: document.getElementById('nom').value,
+          surname: document.getElementById('prenom').value,
+          birth: document.getElementById('date').value,
+          email: document.getElementById('mail').value,
+          password: document.getElementById('pwd').value,
+          confirm: document.getElementById('pass').value
+        };
+
+        try {
+          const response = await fetch('http://localhost:3000/submit', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+          });
+
+          const data = await response.json();
+          
+          if (response.ok) {
+            alert(data.message);
+            window.location.href = data.redirect;
+          } else {
+            alert(data.message || 'Erreur lors de l\'inscription');
+          }
+        } catch (error) {
+          console.error('Erreur:', error);
+          alert('Erreur de connexion au serveur');
+        }
+      });
+    </script>
+  </body>
+</html>
